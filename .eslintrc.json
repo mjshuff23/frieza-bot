@@ -1,5 +1,4 @@
 {
-  "extends": "eslint:recommended",
   "env": {
     "node": true,
     "es6": true
@@ -8,7 +7,6 @@
     "ecmaVersion": 2019
   },
   "rules": {
-    "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
     "comma-spacing": "error",
     "comma-style": "error",
     "curly": ["error", "multi-line", "consistent"],
@@ -27,7 +25,6 @@
       { "max": 3, "maxEOF": 1, "maxBOF": 0 }
     ],
     "no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
-    "no-trailing-spaces": ["error"],
     "no-var": "error",
     "object-curly-spacing": ["error", "always"],
     "prefer-const": "error",
