@@ -5,13 +5,13 @@
 */
 const Discord = require('discord.js');
 const chalk = require('chalk');
-const { token } = require('./config');
-
+const config = require('./config.json');
 // Initialize Discord Client (Our bot)
 const client = new Discord.Client();
 // Just setting some easier aliases for our terminal logging colors
 const greenBright = chalk.greenBright;
 const redBright = chalk.redBright;
+
 
 // When the client is ready, run this code
 // This event will only trigger one time after logging in
@@ -20,13 +20,16 @@ client.once('ready', () => {
     console.log(`${redBright('Lord Frieza')} ${greenBright('walks into the room...')}`);
 });
 
-
 // Creates a 'listener' for the client too respond to incoming messages
 // This will happen every time a message comes in. (Hence the client.on)
 client.on('message', message => {
-    console.log(message.content);
+    // Check the message content
+    if (message.content === '!ping') {
+        // Send message to channel message was received on
+        message.channel.send('Pong');
+    }
 });
 
 
 // login to Discord with your app's token
-client.login(token);
+client.login(config.token);
