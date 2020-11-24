@@ -65,11 +65,9 @@ client.on('message', message => {
     // .shift takes the first item out of the list (command following prefix), toLowerCase makes the command lowercase, and store in variable 'command'
     const commandName = args.shift().toLowerCase();
 
-    // If command does not exist, return out of function
-    if (!client.commands.has(commandName)) return;
+    const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-    // Get command from our commands collection on our client(bot)
-    const command = client.commands.get(commandName);
+    if (!command) return message.reply(`that's not a command... Moron.`);
 
     if (command.guildOnly && message.channel.type === 'dm') {
         return message.reply(`Moron, I can't do this inside of a DM`);

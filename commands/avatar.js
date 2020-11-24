@@ -1,5 +1,7 @@
 module.exports = {
     name: 'avatar',
+    // Aliases must always be an array of strings. An array [] is a list
+    aliases: ['icon', 'pfp'],
     description: 'Displays avatar of user/mentions',
     usage: '@mention1 @mention2 @mention3 ...',
     execute(message, args) {
