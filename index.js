@@ -22,6 +22,7 @@ const client = new Discord.Client();
 // Collections are lists or JavaScript Map's with extended functionality
 // You will have to research Maps, then Collections to get solid understanding.
 client.commands = new Discord.Collection();
+const cooldowns = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -60,25 +61,56 @@ client.on('message', message => {
     // .slice returns a certain slice of a string.  By doing prefix.length, we are cutting out the prefix from the message.  .trim is trimming the extra whitespace, and .split(/ +/) is splitting the words into a list by spaces
     // NOTE: The / +/ is considered regular expression(REGEX) testing.  This looks for one OR MORE spaces (Note the +). the forward slashes are the start/end of the test
     const args = message.content.slice(prefix.length).trim().split(/ +/);
-    // .shift takes the first item out of the list (command following prefix), toLowerCase makes the command lowercase, and store in variable 'command'
-    const command = args.shift().toLowerCase();
 
-    if (command === 'ping') {
-        client.commands.get('ping').execute(message, args);
-    } else if (command === 'beep') {
-        client.commands.get('beep').execute(message, args);
-    } else if (command === 'args-info') {
-        client.commands.get('args-info').execute(message, args, command);
-    } else if (command === 'avatar') {
-        client.commands.get('avatar').execute(message, args);
-    } else if (command === 'kick') {
-        client.commands.get('kick').execute(message, args);
-    } else if (command === 'prune') {
-        client.commands.get('prune').execute(message, args);
-    } else if (command === 'server') {
-        client.commands.get('server').execute(message, args);
-    } else if (command === 'user-info') {
-        client.commands.get('user-info').execute(message, args);
+    // .shift takes the first item out of the list (command following prefix), toLowerCase makes the command lowercase, and store in variable 'command'
+    const commandName = args.shift().toLowerCase();
+
+    // If command does not exist, return out of function
+    if (!client.commands.has(commandName)) return;
+
+    // Get command from our commands collection on our client(bot)
+    const command = client.commands.get(commandName);
+
+    if (command.guildOnly && message.channel.type === 'dm') {
+        return message.reply(`Moron, I can't do this inside of a DM`);
+    }
+
+    if (command.args && !args.length) {
+        let reply = `${message.author}, I will have your head if you don't provide arguments with your command next time.`;
+
+        if (command.usage) {
+            reply += `\n\nHere's a hint: \`${prefix}${command.name} ${command.usage}\``;
+        }
+
+        return message.channel.send(reply);
+    }
+
+    if (!cooldowns.has(command.name)) {
+        cooldowns.set(command.name, new Discord.Collection());
+    }
+
+    const now = Date.now();
+    const timestamps = cooldowns.get(command.name);
+    const cooldownAmount = (command.cooldown || 3) * 1000;
+
+    if (timestamps.has(message.author.id)) {
+        const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+
+        if (now < expirationTime) {
+            const timeLeft = (expirationTime - now) / 1000;
+            return message.reply(`I'll ${command.name} your face! You're on timeout for another ${timeLeft.toFixed(1)} more second(s) dumbass!`);
+        }
+    }
+
+    timestamps.set(message.author.id, now);
+    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+
+    // We use try ... catch ... statements to avoid bugs crashing our app
+    try {
+        command.execute(message, args, commandName);
+    } catch (error) {
+        console.error(error);
+        message.reply(`There was an error trying to execute ${command}!`);
     }
 
 });
