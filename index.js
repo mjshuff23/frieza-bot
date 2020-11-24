@@ -55,7 +55,7 @@ client.on('message', message => {
         // Check if the author of the message is a bot...
         if (message.author.bot) return;
         // If not a bot, log the chat to the terminal...
-        console.log(`${redBright(message.author.username)}: ${whiteBright(message.content)}`);
+        return console.log(`${redBright(message.author.username)}: ${whiteBright(message.content)}`);
     }
 
     // .slice returns a certain slice of a string.  By doing prefix.length, we are cutting out the prefix from the message.  .trim is trimming the extra whitespace, and .split(/ +/) is splitting the words into a list by spaces
