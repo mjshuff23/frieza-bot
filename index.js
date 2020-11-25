@@ -108,7 +108,7 @@ client.on('message', message => {
         command.execute(message, args, commandName);
     } catch (error) {
         console.error(error);
-        message.reply(`There was an error trying to execute ${command}!`);
+        message.reply(`There was an error trying to execute ${commandName}!`);
     }
 
 });

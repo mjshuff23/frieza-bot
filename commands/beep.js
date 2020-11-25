@@ -1,7 +1,8 @@
 module.exports = {
     name: 'beep',
     description: 'Just try it out.',
-    execute(message, args) {
+    cooldown: 5,
+    execute(message) {
         message.channel.send('*Scoffs* Eat worms, infidel...');
     },
 };

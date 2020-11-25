@@ -1,6 +1,7 @@
 module.exports = {
     name: 'prune',
     description: 'Deletes messages in bulk (1-99). Can NOT delete message older than 2 weeks',
+    cooldown: 5,
     args: true,
     usage: '#1-99',
     execute(message, args) {

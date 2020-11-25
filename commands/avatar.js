@@ -3,8 +3,9 @@ module.exports = {
     // Aliases must always be an array of strings. An array [] is a list
     aliases: ['icon', 'pfp'],
     description: 'Displays avatar of user/mentions',
+    cooldown: 5,
     usage: '@mention1 @mention2 @mention3 ...',
-    execute(message, args) {
+    execute(message) {
         if (!message.mentions.users.size) {
             return message.channel.send(`Your avatar: ${message.author.displayAvatarURL({ format: "png", dynamic: true })}`);
         }
